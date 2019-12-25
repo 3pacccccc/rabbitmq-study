@@ -1,11 +1,12 @@
-package com.example.rabbitapi.consumer;
+package com.example.rabbitapi.DLX;
 
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 public class Consumer {
@@ -15,13 +16,21 @@ public class Consumer {
         Connection connection = Connect2Rabbitmq.getConnection();
         Channel channel = connection.createChannel();
 
-        String exchangeName = "test_consumer_change";
-        String routingKey = "consumer.#";
-        String queueName = "test_consumer_queue";
+        String exchangeName = "test_dlx_change";
+        String routingKey = "dlx.#";
+        String queueName = "test_dlx_queue";
 
-        channel.exchangeDeclare(exchangeName, "topic", true, false, null);
-        channel.queueDeclare(queueName, true, false, false, null);
+        channel.exchangeDeclare(exchangeName, "topic", true, false, null); // 普通的声明exchange交换机
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", "dlx.exchange");
+
+        channel.queueDeclare(queueName, true, false, false, arguments);
         channel.queueBind(queueName, exchangeName, routingKey);
+
+        // 声明死信队列
+        channel.exchangeDeclare("dlx.exchange", "topic", true, false, null);
+        channel.queueDeclare("dlx.queue", true, false,false, null);
+        channel.queueBind("dlx.queue", "dlx.exchange", "#");
 
         channel.basicConsume(queueName, true, new MyConsumer(channel));
 

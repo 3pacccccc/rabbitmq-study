@@ -3,7 +3,6 @@ package com.example.rabbitapi.topic_exchange;
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class Consumer {
         // 创建
         channel.exchangeDeclare(exchangeName, exchangeType, true, false, false, null); // 第一个true表示持久化
         channel.queueDeclare(queueName, false, false, false, null);
-         channel.queueBind(queueName, exchangeName, routingKey);
+        channel.queueBind(queueName, exchangeName, routingKey);
 
         QueueingConsumer consumer = new QueueingConsumer(channel);
         channel.basicConsume(queueName, true, consumer);

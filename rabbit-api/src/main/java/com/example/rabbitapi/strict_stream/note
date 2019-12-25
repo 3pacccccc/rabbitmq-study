@@ -1,0 +1,4 @@
+    1.RabbitMQ提供了一种qos(服务质量保证)功能，即在非自动确认消息的前提下，如果一定数据的消息(通过基于consume或者channel设置的qos的值)未被
+确认前，不进行消费信的消息。(所以autoack不能设置为true)
+    2.void BasicQos(uint prefetchSize(对消息大小的限制，一般设置为0表示不作限制), ushort prefetchCount(一次最多能够处理多少条消息，即consumer上
+面最多存在多少条消息，一般设置为1), bool global(true表示在channel通过上限制，false表示在consumer上做限制)); // 都是在no ack模式下才生效

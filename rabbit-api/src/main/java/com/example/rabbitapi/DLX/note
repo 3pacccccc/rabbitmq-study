@@ -1,0 +1,8 @@
+1. 死信队列：DLX, Dead-Letter-Exchange
+利用DLX，当消息在一个队列中变成死信(dead message)之后，它能被重新publish到另一个exchange，这个exchange就是DLX
+
+2.消息变成死信的情况
+    消息被拒绝(basic.reject/basic.nack) 并且requeue=false
+    消息TTL(Time To Live)过期
+    队列达到最大长度
+

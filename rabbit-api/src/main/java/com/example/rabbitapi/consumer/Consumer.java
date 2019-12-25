@@ -1,4 +1,4 @@
-package com.example.rabbitapi.returnlistenwe;
+package com.example.rabbitapi.consumer;
 
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.Channel;
@@ -15,24 +15,16 @@ public class Consumer {
         Connection connection = Connect2Rabbitmq.getConnection();
         Channel channel = connection.createChannel();
 
-        String exchangeName = "test_return_change";
-        String routingKey = "return.#";
-        String routingKeyError = "abc.save";
-        String queueName = "test_return_queue";
-
+        String exchangeName = "test_consumer_change";
+        String routingKey = "consumer.#";
+        String queueName = "test_consumer_queue";
 
         channel.exchangeDeclare(exchangeName, "topic", true, false, null);
         channel.queueDeclare(queueName, true, false, false, null);
         channel.queueBind(queueName, exchangeName, routingKey);
 
-        QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+        channel.basicConsume(queueName, true, new MyConsumer(channel));
 
-        channel.basicConsume(queueName, true, queueingConsumer);
 
-        while (true){
-            QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
-            String msg = new String(delivery.getBody());
-            System.out.println("消费者：" + msg);
-        }
     }
 }

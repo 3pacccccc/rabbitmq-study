@@ -23,7 +23,7 @@ public class Producer {
 
         // 设置
         AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
-                .deliveryMode(2)// deliveryMode(2)表示持久化投递，即消费重启还会投递。deliveryMode(2)如果消费重启就会小时
+                .deliveryMode(2)// deliveryMode(2)表示持久化投递，即消费重启还会投递。deliveryMode(2)如果消费重启就会消失
                 .contentEncoding("UTF-8")
                 .headers(headers) // 自定义属性
                 .expiration("10000")  //10s内被消费完，超出时间会被清除

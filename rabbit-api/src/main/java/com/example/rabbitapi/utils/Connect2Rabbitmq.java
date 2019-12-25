@@ -14,10 +14,11 @@ public class Connect2Rabbitmq {
         connectionFactory.setUsername("49.234.18.154");
         connectionFactory.setPort(5672);
         connectionFactory.setVirtualHost("/");
+        connectionFactory.setUsername("guest");
+        connectionFactory.setPassword("guest");
 
         //2.通过连接工厂创建连接
         return connectionFactory.newConnection();
     }
-
 
 }

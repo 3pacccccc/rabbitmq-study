@@ -1,4 +1,4 @@
-package com.example.rabbitapi.consumer;
+package com.example.rabbitapi.DLX;
 
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.Channel;
@@ -14,10 +14,10 @@ public class Producer {
         Connection connection = Connect2Rabbitmq.getConnection();
         Channel channel = connection.createChannel();
 
-        String exchange = "test_consumer_change";
-        String routingKey = "consumer.save";
+        String exchange = "test_dlx_exchange";
+        String routingKey = "dlx.save";
 
-        String msg = "hello rabbitmq from consumer message";
+        String msg = "hello rabbitmq from dlx message";
 
         // mandatory设置为true的表示当exchange路由不到相应的队列的时候，broker不会删除该消息。会返回到return listener。设置为false会broker自动删除消息
         for (int i = 0; i < 5; i++) {
