@@ -1,11 +1,11 @@
 package com.example.spring;
 
 
-import com.rabbitmq.client.Channel;
+import com.example.spring.adapter.MessageDelegate;
+import com.example.spring.convert.TextMessageConverter;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -88,12 +88,12 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         return new RabbitTemplate(connectionFactory);
     }
 
     @Bean
-    public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory){
+    public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
         container.setQueues(queue001(), queue002(), queue003(), queue_image(), queue_pdf()); // 监听的队列
         container.setConcurrentConsumers(1); // 当前消费者数量
@@ -114,10 +114,10 @@ public class RabbitMqConfig {
 //            }
 //        });
         MessageListenerAdapter adapter = new MessageListenerAdapter(new MessageDelegate());
+        adapter.setDefaultListenerMethod("consumeMessage"); // 修改默认的方法监听方法名(默认的为handleMessage)
+        adapter.setMessageConverter(new TextMessageConverter());
+
         container.setMessageListener(adapter);
         return container;
     }
-
-
-
 }
