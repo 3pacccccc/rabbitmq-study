@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Configuration
@@ -113,10 +115,23 @@ public class RabbitMqConfig {
 //                System.out.println("------------消费者：" + msg);
 //            }
 //        });
-        MessageListenerAdapter adapter = new MessageListenerAdapter(new MessageDelegate());
-        adapter.setDefaultListenerMethod("consumeMessage"); // 修改默认的方法监听方法名(默认的为handleMessage)
-        adapter.setMessageConverter(new TextMessageConverter());
+        /**
+         * 1.适配器方式，默认是有自己的方法名字的：handleMessage
+         * 可以自己指定一个方法的名字：consumeMessage
+         * 也可以添加一个转换器：从字节数组转换为string
+         */
+//        MessageListenerAdapter adapter = new MessageListenerAdapter(new MessageDelegate());
+//        adapter.setDefaultListenerMethod("consumeMessage"); // 修改默认的方法监听方法名(默认的为handleMessage)
+//        adapter.setMessageConverter(new TextMessageConverter()); // 将字节数组转换为字符串
 
+        /**
+         * 2.适配器方式：我们的队列名称和方法名称也可以进行一一匹配
+         */
+        MessageListenerAdapter adapter = new MessageListenerAdapter(new MessageDelegate());
+        Map<String, String> queueOrTagToMethodName = new HashMap<>();
+        queueOrTagToMethodName.put("queue001", "method1");
+        queueOrTagToMethodName.put("queue002", "method2");
+        adapter.setQueueOrTagToMethodName(queueOrTagToMethodName);
         container.setMessageListener(adapter);
         return container;
     }
