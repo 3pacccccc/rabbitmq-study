@@ -1,4 +1,4 @@
-package com.bfxy.spring.entity;
+package com.example.spring.entity;
 
 public class Packaged {
 

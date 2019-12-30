@@ -1,19 +1,34 @@
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+package com.example.producer.producer;
+
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@RunWith(Arquillian.class)
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class RabbitSenderTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(com.example.producer.producer.RabbitSender.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+
+    @Autowired
+    private RabbitSender rabbitSender;
+
+    @Autowired
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:ss.SSS"); //SimpleDateFormat有线程安全问题
+
+    @Test
+    public void testSender1() throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("number", "12345");
+        properties.put("send_time", simpleDateFormat.format(new Date()));
+        rabbitSender.send("hello rabbitmq for spring boot!", properties);
     }
 
 }
