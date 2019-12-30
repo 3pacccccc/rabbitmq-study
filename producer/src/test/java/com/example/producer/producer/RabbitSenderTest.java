@@ -1,6 +1,7 @@
 package com.example.producer.producer;
 
 
+import com.example.producer.entity.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,15 @@ public class RabbitSenderTest {
         Map<String, Object> properties = new HashMap<>();
         properties.put("number", "12345");
         properties.put("send_time", simpleDateFormat.format(new Date()));
-        rabbitSender.send("hello rabbitmq for spring boot!", properties);
+        for (int i = 0; i < 3; i++) {
+            rabbitSender.send("hello rabbitmq for spring boot!", properties);
+        }
+    }
+
+    @Test
+    public void testSender2() throws Exception{
+        Order order = new Order("001", "第一个订单");
+        rabbitSender.sendOrder(order);
     }
 
 }
