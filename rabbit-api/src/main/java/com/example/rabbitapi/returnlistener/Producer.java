@@ -1,4 +1,4 @@
-package com.example.rabbitapi.returnlistenwe;
+package com.example.rabbitapi.returnlistener;
 
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.AMQP;
@@ -24,15 +24,16 @@ public class Producer {
 
         channel.addReturnListener(new ReturnListener() {
             @Override
-            public void handleReturn(int i, String s, String s1, String s2, AMQP.BasicProperties basicProperties, byte[] bytes) throws IOException {
+            public void handleReturn(int replyCode, String replyText, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 System.out.println("--------handle return---------------");
-                System.out.println("replyCode: " + i);
-                System.out.println("replyText: " + s);
-                System.out.println("exchange: " + s1);
-                System.out.println("routingKey: " + s2);
-                System.out.println("properties: " + basicProperties);
-                System.out.println("body: " + new String(bytes));
+                System.out.println("replyCode: " + replyCode);
+                System.out.println("replyText: " + replyText);
+                System.out.println("exchange: " + exchange);
+                System.out.println("routingKey: " + routingKey);
+                System.out.println("properties: " + properties);
+                System.out.println("body: " + new String(body));
             }
+
         });
         // mandatory设置为true的表示当exchange路由不到相应的队列的时候，broker不会删除该消息。会返回到return listener。设置为false会broker自动删除消息
         channel.basicPublish(exchange, routingKeyError, true, null, msg.getBytes());

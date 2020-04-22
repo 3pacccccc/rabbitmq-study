@@ -1,4 +1,4 @@
-package com.example.rabbitapi.returnlistenwe;
+package com.example.rabbitapi.returnlistener;
 
 import com.example.rabbitapi.utils.Connect2Rabbitmq;
 import com.rabbitmq.client.Channel;
